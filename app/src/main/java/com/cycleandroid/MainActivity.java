@@ -8,11 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.concurrent.TimeUnit;
-
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,15 +24,19 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private Sinks main(Sources sources) {
-    Func1<String, View> vtree = c -> {
-      View tree = LayoutInflater.from(this).inflate(R.layout.vtree_main, null);
-      TextView txtCounter = (TextView) tree.findViewById(R.id.txtCounter);
-      txtCounter.setText(c);
-      return tree;
-    };
-    return Sinks.create(Observable.interval(1, 1, TimeUnit.SECONDS)
+    Observable<Integer> actionStream = Observable.merge(
+        sources.dom().select(R.id.btnIncrement).events("click").map(ev -> 1),
+        sources.dom().select(R.id.btnDecrement).events("click").map(ev -> -1));
+
+    return Sinks.create(actionStream
+        .startWith(0)
+        .scan((x, y) -> x + y)
         .map(String::valueOf)
-        .map(vtree)
-        .observeOn(AndroidSchedulers.mainThread()));
+        .map(c -> {
+          View tree = LayoutInflater.from(this).inflate(R.layout.vtree_main, null);
+          TextView txtCounter = (TextView) tree.findViewById(R.id.txtCount);
+          txtCounter.setText(c);
+          return tree;
+        }));
   }
 }

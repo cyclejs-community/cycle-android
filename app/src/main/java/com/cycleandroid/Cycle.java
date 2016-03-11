@@ -9,8 +9,8 @@ import rx.subjects.ReplaySubject;
 final class Cycle {
   public static void run(Func1<Sources, Sinks> main, ViewGroup target) {
     ReplaySubject<View> sinkProxy = ReplaySubject.create(1);
-    Sources sources = Sources.create(ViewDriver.makeViewDriver(target, sinkProxy));
+    Sources sources = Sources.create(new DOM(DOMDriver.makeDOMDriver(target, sinkProxy)));
     Sinks sinks = main.call(sources);
-    sinks.views().subscribe(sinkProxy);
+    sinks.dom().subscribe(sinkProxy);
   }
 }
