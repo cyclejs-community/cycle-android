@@ -2,6 +2,8 @@
 <manifest package="org.js.cycle.android.sample"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+  <uses-permission android:name="android.permission.INTERNET" />
+
   <application
     android:allowBackup="true"
     android:icon="@mipmap/ic_launcher"
@@ -10,7 +12,7 @@
     android:theme="@style/AppTheme">
     <activity
       android:name=".CounterActivity"
-      android:label="@string/app_name"
+      android:label="Counter"
       android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -19,9 +21,12 @@
     </activity>
     <activity
       android:name=".HelloWorldActivity"
-      android:label="@string/app_name"
-      android:theme="@style/AppTheme.NoActionBar">
-    </activity>
+      android:label="Hello World"
+      android:theme="@style/AppTheme.NoActionBar" />
+    <activity
+      android:name=".GithubSearchActivity"
+      android:label="Github Search"
+      android:theme="@style/AppTheme.NoActionBar" />
   </application>
 
 </manifest>

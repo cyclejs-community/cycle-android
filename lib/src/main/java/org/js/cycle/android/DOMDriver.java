@@ -15,18 +15,17 @@ import rx.functions.Action0;
 import rx.subjects.PublishSubject;
 import trikita.anvil.Anvil;
 
-final class DOMDriver {
+public final class DomDriver implements Driver {
   private final ViewGroup root;
   private final PublishSubject<Event> events = PublishSubject.create();
   private TouchEventInterceptingLayout touchInterceptor;
 
-  private DOMDriver(ViewGroup root, Observable<Action0> domSink) {
+  private DomDriver(ViewGroup root) {
     this.root = root;
-    domSink.subscribe(this::renderVTree);
   }
 
-  public static DOMDriver makeDOMDriver(ViewGroup target, Observable<Action0> domSink) {
-    return new DOMDriver(target, domSink);
+  public static DomDriver makeDomDriver(ViewGroup target) {
+    return new DomDriver(target);
   }
 
   private void renderVTree(Action0 action) {
@@ -39,6 +38,11 @@ final class DOMDriver {
 
   Observable<Event> events() {
     return events;
+  }
+
+  @Override public void apply(Observable<?> stream) {
+    //noinspection unchecked
+    ((Observable<Action0>) stream).subscribe(this::renderVTree);
   }
 
   class TouchEventInterceptingLayout extends FrameLayout {

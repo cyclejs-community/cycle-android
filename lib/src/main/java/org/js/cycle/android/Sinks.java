@@ -1,20 +1,38 @@
 package org.js.cycle.android;
 
-import rx.Observable;
-import rx.functions.Action0;
+import java.util.Arrays;
+import java.util.List;
 
+@SuppressWarnings("rawtypes")
 public final class Sinks {
-  private final Observable<Action0> dom;
+  private final List<Sink> sinks;
 
-  private Sinks(Observable<Action0> dom) {
-    this.dom = dom;
+  private Sinks(Sink... sinks) {
+    this.sinks = Arrays.asList(sinks);
   }
 
-  public static Sinks create(Observable<Action0> dom) {
-    return new Sinks(dom);
+  public static Sinks create(Sink... sinks) {
+    return new Sinks(sinks);
   }
 
-  Observable<Action0> dom() {
-    return dom;
+  public DomSink dom() {
+    return (DomSink) findSinkByName("DOM");
+  }
+
+  public HttpSink http() {
+    return (HttpSink) findSinkByName("HTTP");
+  }
+
+  public List<Sink> list() {
+    return sinks;
+  }
+
+  private Sink findSinkByName(String name) {
+    for (Sink sink : sinks) {
+      if (sink.name().equals(name)) {
+        return sink;
+      }
+    }
+    return null;
   }
 }

@@ -1,6 +1,7 @@
 package org.js.cycle.android.sample;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -11,6 +12,10 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import org.js.cycle.android.Cycle;
+import org.js.cycle.android.DomDriver;
+import org.js.cycle.android.DomSource;
+import org.js.cycle.android.HttpDriver;
+import org.js.cycle.android.HttpSource;
 import org.js.cycle.android.Sinks;
 import org.js.cycle.android.Sources;
 
@@ -28,6 +33,7 @@ public abstract class SampleActivity extends AppCompatActivity
     app = (ViewGroup) findViewById(R.id.app);
     drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     navigationView = (NavigationView) findViewById(R.id.drawer);
+    navigationView.getMenu().findItem(menuItemId()).setChecked(true);
     setSupportActionBar(toolbar);
     ActionBar actionBar = getSupportActionBar();
     //noinspection ConstantConditions
@@ -40,19 +46,27 @@ public abstract class SampleActivity extends AppCompatActivity
     navigationView.setNavigationItemSelectedListener(this);
     toggle.syncState();
 
-    Cycle.run(this::main, app);
+    DomSource domSource = new DomSource(DomDriver.makeDomDriver(app));
+    HttpSource httpSource = new HttpSource(HttpDriver.makeHttpDriver());
+    Cycle.run(this::main, domSource, httpSource);
   }
 
   protected abstract Sinks main(Sources sources);
 
+  @IdRes protected abstract int menuItemId();
+
   @Override public boolean onNavigationItemSelected(MenuItem item) {
-    switch(item.getItemId()) {
+    switch (item.getItemId()) {
       case R.id.nav_counter:
         startActivity(CounterActivity.newIntent(this));
         finish();
         break;
       case R.id.nav_hello_world:
         startActivity(HelloWorldActivity.newIntent(this));
+        finish();
+        break;
+      case R.id.nav_search:
+        startActivity(GithubSearchActivity.newIntent(this));
         finish();
         break;
       default:

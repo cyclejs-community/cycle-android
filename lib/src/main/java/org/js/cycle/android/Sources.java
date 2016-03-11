@@ -1,17 +1,37 @@
 package org.js.cycle.android;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Sources {
-  private final DOM dom;
+  private final List<Source> sources;
 
-  private Sources(DOM dom) {
-    this.dom = dom;
+  private Sources(Source... sources) {
+    this.sources = Arrays.asList(sources);
   }
 
-  public static Sources create(DOM dom) {
-    return new Sources(dom);
+  public static Sources create(Source... sources) {
+    return new Sources(sources);
   }
 
-  public DOM dom() {
-    return dom;
+  public DomSource dom() {
+    return (DomSource) findSourceByName("DOM");
+  }
+
+  public HttpSource http() {
+    return (HttpSource) findSourceByName("HTTP");
+  }
+
+  public List<Source> list() {
+    return sources;
+  }
+
+  private Source findSourceByName(String name) {
+    for (Source source : sources) {
+      if (source.name().equals(name)) {
+        return source;
+      }
+    }
+    return null;
   }
 }
