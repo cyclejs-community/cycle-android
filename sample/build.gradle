@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+  compileSdkVersion 23
+  buildToolsVersion "23.0.2"
+
+  defaultConfig {
+    applicationId "org.js.cycle.android.sample"
+    minSdkVersion 16
+    targetSdkVersion 23
+    versionCode 1
+    versionName "1.0"
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+dependencies {
+  compile(project(':lib'))
+  compile 'com.android.support:appcompat-v7:23.2.0'
+  compile 'com.android.support:design:23.2.0'
+}

@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <group
+    android:id="@+id/group_1"
+    android:checkableBehavior="single">
+    <item
+      android:id="@+id/nav_counter"
+      android:title="Counter"/>
+    <item
+      android:id="@+id/nav_hello_world"
+      android:title="Hello World"/>
+  </group>
+
+</menu>
