@@ -12,43 +12,44 @@ import org.js.cycle.android.Sources;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.moshi.MoshiConverterFactory;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
+import static trikita.anvil.BaseDSL.MATCH;
+import static trikita.anvil.BaseDSL.WRAP;
+import static trikita.anvil.BaseDSL.size;
 import static trikita.anvil.BaseDSL.withId;
 import static trikita.anvil.BaseDSL.xml;
 import static trikita.anvil.DSL.text;
+import static trikita.anvil.DSL.textView;
 
 public class GithubSearchActivity extends SampleActivity {
-  private final Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl("https://api.github.com")
-      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-      .addConverterFactory(MoshiConverterFactory.create())
-      .build();
-  private final GithubService githubService = retrofit.create(GithubService.class);;
-
   @Override protected Sinks main(Sources sources) {
+    SampleApplication application = (SampleApplication) getApplication();
     DomSink domSink = DomSink.create(sources.http()
         .<SearchResponse>observable()
         .flatMap(r -> r)
         .map(Response::body)
         .startWith(new SearchResponse())
+        .observeOn(AndroidSchedulers.mainThread())
         .map(results -> (Action0) () -> xml(R.layout.vtree_search_github, () ->
             withId(R.id.layout_results, () -> {
               for (SearchResponse.SearchResponseItem item : results.items) {
-                text(item.full_name);
+                textView(() -> {
+                  size(MATCH, WRAP);
+                  text(item.full_name);
+                });
               }
             }))));
-
+    GithubService githubService = application.githubService();
     HttpSink httpSink = HttpSink.create(sources.dom()
         .select(R.id.editQuery)
         .events("input")
         .debounce(500, TimeUnit.MILLISECONDS)
         .map(ev -> ev.<EditText>view().getText().toString())
         .filter(q -> q.length() > 0)
-        .map(githubService::search));
+        .map(q -> githubService.search(q).subscribeOn(Schedulers.io())));
 
     return Sinks.create(domSink, httpSink);
   }
