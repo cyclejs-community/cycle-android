@@ -5,7 +5,7 @@
   >
 
   <LinearLayout
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     >
@@ -13,28 +13,21 @@
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_gravity="center_horizontal"
+      android:layout_gravity="center_vertical"
       android:text="Query:"
       />
 
     <EditText
       android:id="@+id/editQuery"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       />
   </LinearLayout>
 
-  <ScrollView
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/recycler"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    />
 
-    <LinearLayout
-      android:id="@+id/layout_results"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      />
-
-  </ScrollView>
 </LinearLayout>
