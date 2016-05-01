@@ -2,13 +2,17 @@ package org.js.cycle.android;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+
+import java.util.ArrayList;
 
 import rx.Observable;
 import rx.functions.Action0;
@@ -34,6 +38,13 @@ public final class DomDriver implements Driver {
       root.addView(touchInterceptor);
     }
     Anvil.mount(touchInterceptor, action::call);
+
+    final ArrayList<View> focusables = touchInterceptor.getFocusables(View.FOCUS_FORWARD);
+    for (View focusable: focusables) {
+      if (focusable instanceof EditText) {
+        ((EditText) focusable).addTextChangedListener(new DomTextWatcher((EditText) focusable));
+      }
+    }
   }
 
   Observable<Event> events() {
@@ -43,6 +54,29 @@ public final class DomDriver implements Driver {
   @Override public void apply(Observable<?> stream) {
     //noinspection unchecked
     ((Observable<Action0>) stream).subscribe(this::renderVTree);
+  }
+
+  class DomTextWatcher implements TextWatcher {
+    private final View editText;
+
+    DomTextWatcher(EditText editText) {
+      this.editText = editText;
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      // noop
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+      events.onNext(new Event("input", editText));
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+      // noop
+    }
   }
 
   class TouchEventInterceptingLayout extends FrameLayout {
@@ -78,27 +112,6 @@ public final class DomDriver implements Driver {
       gestureDetector.onTouchEvent(ev);
       return super.onInterceptTouchEvent(ev);
     }
-
-    @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
-      return super.onKeyDown(keyCode, event);
-    }
-
-    @Override public boolean dispatchKeyEvent(KeyEvent event) {
-      if (event.getAction() == KeyEvent.ACTION_UP) {
-        events.onNext(new Event("input", tryGetFocusedChild(this)));
-      }
-      return super.dispatchKeyEvent(event);
-    }
-  }
-
-  @Nullable private static View tryGetFocusedChild(View view) {
-    if (!(view instanceof ViewGroup) && view.isFocused()) {
-      return view;
-    }
-    if (view instanceof ViewGroup) {
-      return tryGetFocusedChild(((ViewGroup) view).getFocusedChild());
-    }
-    return null;
   }
 
   @Nullable private static View getClickTarget(View view, MotionEvent e) {
