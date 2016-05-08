@@ -42,7 +42,12 @@ public final class DomDriver implements Driver {
     final ArrayList<View> focusables = touchInterceptor.getFocusables(View.FOCUS_FORWARD);
     for (View focusable: focusables) {
       if (focusable instanceof EditText) {
-        ((EditText) focusable).addTextChangedListener(new DomTextWatcher((EditText) focusable));
+        final EditText editText = (EditText) focusable;
+        if (editText.getTag() == null || !(editText.getTag() instanceof DomTextWatcher)) {
+          DomTextWatcher domTextWatcher = new DomTextWatcher(editText);
+          editText.addTextChangedListener(domTextWatcher);
+          editText.setTag(domTextWatcher);
+        }
       }
     }
   }
