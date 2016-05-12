@@ -2,9 +2,6 @@ package org.js.cycle.android;
 
 import rx.Observable;
 
-/**
- * Created by chris on 05/05/16.
- */
 public class PropsSource implements Source {
     private Observable<? extends Props> propsObservable;
 
@@ -21,8 +18,8 @@ public class PropsSource implements Source {
     }
 
     @Override public void apply(Observable<?> stream) {
-        //propsObservable = stream;
+        //noinspection unchecked
+        propsObservable = (Observable<? extends Props>) stream;
     }
 
-//    create
 }
