@@ -6,9 +6,9 @@ import rx.Observable;
  * Created by chris on 05/05/16.
  */
 public class ValueSink implements Sink {
-    private Observable<Integer> valueStream;
+    private Observable<?> valueStream;
 
-    public ValueSink(Observable<Integer> valueStream) {
+    public ValueSink(Observable<?> valueStream) {
         this.valueStream = valueStream;
     }
 
@@ -18,12 +18,12 @@ public class ValueSink implements Sink {
     }
 
 
-    @Override public Observable<Integer> stream() {
+    @Override public Observable<?> stream() {
         return valueStream;
     }
 
     public static <T> ValueSink create(Observable<T> valueStream) {
         //noinspection unchecked
-        return new ValueSink((Observable<Integer>) valueStream);
+        return new ValueSink(valueStream);
     }
 }

@@ -37,10 +37,11 @@ public class BMIActivity extends SampleActivity {
     );
 
     Observable<Integer> bmi$ = Observable.combineLatest(
-        weightSinks.value().stream(), heightSinks.value().stream(),
-        (Integer weight, Integer height) -> {
-          final Double heightMeters = height.doubleValue() * 0.01;
-          final Double bmi = weight.doubleValue() / (heightMeters * heightMeters);
+       weightSinks.value().stream(),
+       heightSinks.value().stream(),
+        (weight, height) -> {
+          final Double heightMeters = ((Integer)height).doubleValue() * 0.01;
+          final Double bmi = ((Integer)weight).doubleValue() / (heightMeters * heightMeters);
           return bmi.intValue();
         });
 
