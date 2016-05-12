@@ -15,10 +15,10 @@
       android:name=".CounterActivity"
       android:label="Counter"
       android:theme="@style/AppTheme.NoActionBar">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
+      <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN"/>-->
+        <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+      <!--</intent-filter>-->
     </activity>
     <activity
       android:name=".HelloWorldActivity"
@@ -28,6 +28,16 @@
       android:name=".GithubSearchActivity"
       android:label="Github Search"
       android:theme="@style/AppTheme.NoActionBar" />
+    <activity
+        android:name=".BMIActivity"
+        android:label="BMI"
+        android:theme="@style/AppTheme.NoActionBar">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+
   </application>
 
 </manifest>
