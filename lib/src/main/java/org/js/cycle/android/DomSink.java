@@ -1,16 +1,16 @@
 package org.js.cycle.android;
 
 import rx.Observable;
-import rx.functions.Action0;
+import trikita.anvil.Anvil;
 
 public final class DomSink implements Sink {
-  private final Observable<Action0> vtree;
+  private final Observable<Anvil.Renderable> vtree;
 
-  private DomSink(Observable<Action0> vtree) {
+  private DomSink(Observable<Anvil.Renderable> vtree) {
     this.vtree = vtree;
   }
 
-  public static DomSink create(Observable<Action0> vtree) {
+  public static DomSink create(Observable<Anvil.Renderable> vtree) {
     return new DomSink(vtree);
   }
 

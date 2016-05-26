@@ -25,8 +25,9 @@ android {
 }
 
 dependencies {
-  compile(project(':lib'))
-  compile 'com.android.support:appcompat-v7:23.2.1'
-  compile 'com.android.support:design:23.2.1'
-  compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+  compile project(':lib')
+  retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
+  compile 'com.android.support:appcompat-v7:23.4.0'
+  compile 'com.android.support:design:23.4.0'
+  compile 'com.squareup.okhttp3:logging-interceptor:3.3.0'
 }
