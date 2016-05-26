@@ -15,7 +15,6 @@ import android.widget.FrameLayout;
 import java.util.ArrayList;
 
 import rx.Observable;
-import rx.functions.Action0;
 import rx.subjects.PublishSubject;
 import trikita.anvil.Anvil;
 
@@ -32,12 +31,12 @@ public final class DomDriver implements Driver {
     return new DomDriver(target);
   }
 
-  private void renderVTree(Action0 action) {
+  private void renderVTree(Anvil.Renderable renderable) {
     if (touchInterceptor == null) {
       touchInterceptor = new TouchEventInterceptingLayout(root.getContext());
       root.addView(touchInterceptor);
     }
-    Anvil.mount(touchInterceptor, action::call);
+    Anvil.mount(touchInterceptor, renderable);
 
     final ArrayList<View> focusables = touchInterceptor.getFocusables(View.FOCUS_FORWARD);
     for (View focusable: focusables) {
@@ -58,7 +57,7 @@ public final class DomDriver implements Driver {
 
   @Override public void apply(Observable<?> stream) {
     //noinspection unchecked
-    ((Observable<Action0>) stream).subscribe(this::renderVTree);
+    ((Observable<Anvil.Renderable>) stream).subscribe(this::renderVTree);
   }
 
   class DomTextWatcher implements TextWatcher {

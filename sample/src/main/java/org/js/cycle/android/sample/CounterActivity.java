@@ -8,7 +8,7 @@ import org.js.cycle.android.Sinks;
 import org.js.cycle.android.Sources;
 
 import rx.Observable;
-import rx.functions.Action0;
+import trikita.anvil.Anvil;
 
 import static trikita.anvil.BaseDSL.withId;
 import static trikita.anvil.BaseDSL.xml;
@@ -24,7 +24,7 @@ public class CounterActivity extends SampleActivity {
         .startWith(0)
         .scan((x, y) -> x + y)
         .map(String::valueOf)
-        .map(c -> (Action0) () ->
+        .map(c -> (Anvil.Renderable) () ->
             xml(R.layout.vtree_counter, () ->
                 withId(R.id.txtCount, () ->
                     text(c)))));

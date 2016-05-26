@@ -16,7 +16,7 @@ public final class Cycle {
   }
 
   private static void subscribeProxies(Map<String, ReplaySubject<?>> sinkProxies, Sinks sinks) {
-    for (Sink sink : sinks.list()) {
+    for (Sink sink : sinks) {
       //noinspection rawtypes
       Observer proxy = sinkProxies.get(sink.name());
       //noinspection unchecked

@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.schedulers.Schedulers;
+import trikita.anvil.Anvil;
 
 import static trikita.anvil.BaseDSL.withId;
 import static trikita.anvil.BaseDSL.xml;
@@ -37,7 +37,7 @@ public class GithubSearchActivity extends SampleActivity {
         .map(Response::body)
         .startWith(new SearchResponse())
         .observeOn(AndroidSchedulers.mainThread())
-        .map(results -> (Action0) () -> xml(R.layout.vtree_search_github, () ->
+        .map(results -> (Anvil.Renderable) () -> xml(R.layout.vtree_search_github, () ->
             withId(R.id.recycler, () -> {
               layoutManager(layoutManager);
               hasFixedSize(true);
