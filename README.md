@@ -13,6 +13,45 @@ All have been ported from the Cycle.js [Examples repository](https://github.com/
 This is for now just a proposal and I'm hoping to get feedback from people before investing more time
 on it.
 
+# Usage
+
+`build.gradle`
+
+```groovy
+compile 'com.felipecsl:cycle-android:0.1.0-SNAPSHOT'
+```
+
+`MyActivity.java`
+
+```java
+public class MyActivity extends AppCompatActivity {
+   @Override protected void onCreate(Bundle savedInstanceState) {
+     super.onCreate(savedInstanceState);
+     setContentView(R.layout.activity_sample);
+     app = (ViewGroup) findViewById(R.id.app);
+     DomSource domSource = new DomSource(DomDriver.makeDomDriver(app));
+     HttpSource httpSource = new HttpSource(HttpDriver.makeHttpDriver());
+     Cycle.run(this::main, domSource, httpSource);
+   }
+
+   private Sinks main(Sources sources) {
+     DomSink domSink = DomSink.create(sources.dom()
+       .select(R.id.editName)
+       .events("input")
+       .map(ev -> ev.<EditText>view().getText().toString())
+       .startWith("")
+       .map(name -> (Anvil.Renderable) () ->
+           xml(R.layout.vtree_helloworld, () ->
+               withId(R.id.txtHelloWorld, () ->
+                   text("Hello, " + name)))));
+
+       return Sinks.create(domSink);
+   }
+}
+```
+
+See the [Sample app](https://github.com/felipecsl/cycle-android/tree/master/sample/src/main/java/org/js/cycle/android/sample) for more examples.
+
 
 License
 -------
