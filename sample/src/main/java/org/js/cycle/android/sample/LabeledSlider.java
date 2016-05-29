@@ -7,9 +7,9 @@ import android.widget.LinearLayout;
 import org.js.cycle.android.Component;
 import org.js.cycle.android.DomSink;
 import org.js.cycle.android.Props;
+import org.js.cycle.android.Sink;
 import org.js.cycle.android.Sinks;
 import org.js.cycle.android.Sources;
-import org.js.cycle.android.ValueSink;
 
 import rx.Observable;
 import trikita.anvil.Anvil;
@@ -65,7 +65,7 @@ public class LabeledSlider implements Component{
                   });
                 });
 
-    return Sinks.create(ValueSink.create(value$), DomSink.create(vtree$));
+    return Sinks.create(Sink.Factory.create("VALUE", value$), DomSink.create(vtree$));
   }
 
   public static class LabeledSliderProps implements Props {

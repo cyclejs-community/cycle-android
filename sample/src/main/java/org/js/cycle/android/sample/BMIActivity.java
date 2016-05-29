@@ -37,8 +37,8 @@ public class BMIActivity extends SampleActivity {
     );
 
     Observable<Integer> bmi$ = Observable.combineLatest(
-       weightSinks.value().stream(),
-       heightSinks.value().stream(),
+       weightSinks.findSinkByName("VALUE").stream(),
+       heightSinks.findSinkByName("VALUE").stream(),
         (weight, height) -> {
           final Double heightMeters = ((Integer)height).doubleValue() * 0.01;
           final Double bmi = ((Integer)weight).doubleValue() / (heightMeters * heightMeters);
@@ -46,7 +46,7 @@ public class BMIActivity extends SampleActivity {
         });
 
     DomSink domSink = DomSink.create(
-        Observable.combineLatest(bmi$, weightSinks.dom().stream(), heightSinks.dom().stream(),
+        Observable.combineLatest(bmi$, weightSinks.findSinkByName("DOM").stream(), heightSinks.findSinkByName("DOM").stream(),
             (bmi, weightVtree, heightVtree) -> (Anvil.Renderable) () ->
                 linearLayout(() -> {
                   orientation(LinearLayout.VERTICAL);
