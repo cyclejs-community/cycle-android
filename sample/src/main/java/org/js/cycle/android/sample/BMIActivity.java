@@ -18,35 +18,26 @@ import static trikita.anvil.DSL.text;
 import static trikita.anvil.DSL.textView;
 
 public class BMIActivity extends SampleActivity {
+  @Override protected Sinks main(Sources sources) {
+    LabeledSlider labeledSlider = new LabeledSlider();
+    Sinks weightSinks = labeledSlider.create(Sources.create(sources.dom(), new PropsSource(
+        Observable.just(new LabeledSlider.LabeledSliderProps("Weight", "kg", 40, 70, 140)))));
 
-  @Override
-  protected Sinks main(Sources sources) {
-    final LabeledSlider labeledSlider =  new LabeledSlider();
-    Sinks weightSinks = labeledSlider.create(
-        Sources.create(
-            sources.dom(),
-            new PropsSource(Observable.just(new LabeledSlider.LabeledSliderProps("Weight", "kg", 40, 70, 140)))
-        )
-    );
-
-    Sinks heightSinks = labeledSlider.create(
-        Sources.create(
-            sources.dom(),
-            new PropsSource(Observable.just(new LabeledSlider.LabeledSliderProps("Height", "cm", 140, 170, 210)))
-        )
-    );
+    Sinks heightSinks = labeledSlider.create(Sources.create(sources.dom(), new PropsSource(
+        Observable.just(new LabeledSlider.LabeledSliderProps("Height", "cm", 140, 170, 210)))));
 
     Observable<Integer> bmi$ = Observable.combineLatest(
-       weightSinks.findSinkByName("VALUE").stream(),
-       heightSinks.findSinkByName("VALUE").stream(),
+        weightSinks.findSinkByName("VALUE").stream(),
+        heightSinks.findSinkByName("VALUE").stream(),
         (weight, height) -> {
-          final Double heightMeters = ((Integer)height).doubleValue() * 0.01;
-          final Double bmi = ((Integer)weight).doubleValue() / (heightMeters * heightMeters);
+          final Double heightMeters = ((Integer) height).doubleValue() * 0.01;
+          final Double bmi = ((Integer) weight).doubleValue() / (heightMeters * heightMeters);
           return bmi.intValue();
         });
 
     DomSink domSink = DomSink.create(
-        Observable.combineLatest(bmi$, weightSinks.findSinkByName("DOM").stream(), heightSinks.findSinkByName("DOM").stream(),
+        Observable.combineLatest(bmi$, weightSinks.findSinkByName("DOM").stream(),
+            heightSinks.findSinkByName("DOM").stream(),
             (bmi, weightVtree, heightVtree) -> (Anvil.Renderable) () ->
                 linearLayout(() -> {
                   orientation(LinearLayout.VERTICAL);
@@ -54,7 +45,6 @@ public class BMIActivity extends SampleActivity {
                   ((Anvil.Renderable) heightVtree).view();
                   textView(() -> text("BMI: " + bmi));
                 })
-
         )
     );
 
@@ -66,7 +56,7 @@ public class BMIActivity extends SampleActivity {
     return R.id.nav_bmi;
   }
 
-  public static Intent newIntent(Context context) {
+  static Intent newIntent(Context context) {
     return new Intent(context, BMIActivity.class);
   }
 }
