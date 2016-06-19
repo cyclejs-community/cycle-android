@@ -69,6 +69,10 @@ public abstract class SampleActivity extends AppCompatActivity
         startActivity(GithubSearchActivity.newIntent(this));
         finish();
         break;
+      case R.id.nav_bmi:
+        startActivity(BMIActivity.newIntent(this));
+        finish();
+        break;
       default:
         return false;
     }

@@ -34,4 +34,8 @@ public class Sources {
     }
     return null;
   }
+
+  public PropsSource props() {
+      return (PropsSource) findSourceByName("PROPS");
+  }
 }
