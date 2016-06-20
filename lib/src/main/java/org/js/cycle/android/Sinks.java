@@ -3,9 +3,10 @@ package org.js.cycle.android;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import rx.Observable;
+
 @SuppressWarnings("rawtypes")
 public final class Sinks extends ArrayList<Sink> {
-
   private Sinks(Sink... sinks) {
     super(Arrays.asList(sinks));
   }
@@ -14,12 +15,13 @@ public final class Sinks extends ArrayList<Sink> {
     return new Sinks(sinks);
   }
 
-  public Sink findSinkByName(String name) {
+  public <T> Observable<T> findStreamOrThrow(String name) {
     for (Sink sink : this) {
       if (sink.name().equals(name)) {
-        return sink;
+        //noinspection unchecked
+        return (Observable<T>) sink.stream();
       }
     }
-    return null;
+    throw new IllegalArgumentException("Cannot find Sink with name " + name);
   }
 }

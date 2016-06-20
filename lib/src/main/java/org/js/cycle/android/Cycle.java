@@ -16,11 +16,15 @@ public final class Cycle {
   }
 
   private static void subscribeProxies(Map<String, ReplaySubject<?>> sinkProxies, Sinks sinks) {
-    for (Sink sink : sinks) {
+    for (Sink<?> sink : sinks) {
       //noinspection rawtypes
       Observer proxy = sinkProxies.get(sink.name());
-      //noinspection unchecked
-      sink.stream().subscribe(proxy);
+      // If there was not a Source matching the provided sink, the proxy will be null here, so we
+      // just skip it.
+      if (proxy != null) {
+        //noinspection unchecked
+        sink.stream().subscribe(proxy);
+      }
     }
   }
 

@@ -13,6 +13,7 @@ import org.js.cycle.android.Sources;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import trikita.anvil.Anvil;
@@ -28,7 +29,6 @@ import static trikita.anvil.recyclerview.Recycler.layoutManager;
 
 public class GithubSearchActivity extends SampleActivity {
   @Override protected Sinks main(Sources sources) {
-    SampleApplication application = (SampleApplication) getApplication();
     LinearLayoutManager layoutManager =
         new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
     DomSink domSink = DomSink.create(sources.http()
@@ -45,23 +45,30 @@ public class GithubSearchActivity extends SampleActivity {
                   textView(() ->
                       text(results.items.get(viewHolder.getAdapterPosition()).name))));
             }))));
-    GithubService githubService = application.githubService();
     HttpSink httpSink = HttpSink.create(sources.dom()
         .select(R.id.editQuery)
         .events("input")
         .debounce(500, TimeUnit.MILLISECONDS)
         .map(ev -> ev.<EditText>view().getText().toString())
         .filter(q -> q.length() > 0)
-        .map(q -> githubService.search(q).subscribeOn(Schedulers.io())));
+        .map(this::queryToObservable));
 
     return Sinks.create(domSink, httpSink);
+  }
+
+  private Observable<? extends Response<?>> queryToObservable(String q) {
+    SampleApplication application = (SampleApplication) getApplication();
+    GithubService githubService = application.githubService();
+    return githubService.search(q)
+        .map(r -> (Response<?>) r)
+        .subscribeOn(Schedulers.io());
   }
 
   @Override protected int menuItemId() {
     return R.id.nav_search;
   }
 
-  public static Intent newIntent(Context context) {
+  static Intent newIntent(Context context) {
     return new Intent(context, GithubSearchActivity.class);
   }
 }

@@ -3,7 +3,7 @@ package org.js.cycle.android;
 import rx.Observable;
 import trikita.anvil.Anvil;
 
-public final class DomSink implements Sink {
+public final class DomSink implements Sink<Anvil.Renderable> {
   private final Observable<Anvil.Renderable> vtree;
 
   private DomSink(Observable<Anvil.Renderable> vtree) {
@@ -18,7 +18,7 @@ public final class DomSink implements Sink {
     return "DOM";
   }
 
-  @Override public Observable<?> stream() {
+  @Override public Observable<Anvil.Renderable> stream() {
     return vtree;
   }
 }

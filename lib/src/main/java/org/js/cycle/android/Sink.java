@@ -2,18 +2,18 @@ package org.js.cycle.android;
 
 import rx.Observable;
 
-public interface Sink {
+public interface Sink<T> {
   String name();
-  Observable<?> stream();
+  Observable<T> stream();
 
   class Factory {
-    public static Sink create(String name, Observable<?> stream) {
-      return new Sink() {
+    public static <T> Sink<T> create(String name, Observable<T> stream) {
+      return new Sink<T>() {
         @Override public String name() {
           return name;
         }
 
-        @Override public Observable<?> stream() {
+        @Override public Observable<T> stream() {
           return stream;
         }
       };
