@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-class LabeledSlider extends LinearLayout {
+public class LabeledSlider extends LinearLayout {
   @IdRes static final int NUMBER_PICKER_VIEW_ID = R.id.labeled_slider_picker;
   private final TextView label;
   private final NumberPicker picker;
