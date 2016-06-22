@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <TextView
+    android:id="@+id/labeled_slider_label"
+    style="@style/TextAppearance.AppCompat.Medium"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    />
+
+  <NumberPicker
+    android:id="@+id/labeled_slider_picker"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:inputType="number"
+    />
+
+</merge>

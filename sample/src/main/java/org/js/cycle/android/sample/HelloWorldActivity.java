@@ -8,8 +8,6 @@ import org.js.cycle.android.DomSink;
 import org.js.cycle.android.Sinks;
 import org.js.cycle.android.Sources;
 
-import trikita.anvil.Anvil;
-
 import static trikita.anvil.BaseDSL.withId;
 import static trikita.anvil.BaseDSL.xml;
 import static trikita.anvil.DSL.text;
@@ -21,7 +19,7 @@ public class HelloWorldActivity extends SampleActivity {
         .events("input")
         .map(ev -> ev.<EditText>view().getText().toString())
         .startWith("")
-        .map(name -> (Anvil.Renderable) () ->
+        .map(name -> () ->
             xml(R.layout.vtree_helloworld, () ->
                 withId(R.id.txtHelloWorld, () ->
                     text("Hello, " + name)))));
@@ -33,7 +31,7 @@ public class HelloWorldActivity extends SampleActivity {
     return R.id.nav_hello_world;
   }
 
-  public static Intent newIntent(Context context) {
+  static Intent newIntent(Context context) {
     return new Intent(context, HelloWorldActivity.class);
   }
 }

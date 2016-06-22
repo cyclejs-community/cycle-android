@@ -1,27 +1,21 @@
 package org.js.cycle.android;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.AttributeSet;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-
-import java.util.ArrayList;
+import android.widget.NumberPicker;
 
 import rx.Observable;
+import rx.Observer;
 import rx.subjects.PublishSubject;
 import trikita.anvil.Anvil;
 
+/** TODO */
 public final class DomDriver implements Driver {
   private final ViewGroup root;
-  private final PublishSubject<Event> events = PublishSubject.create();
-  private TouchEventInterceptingLayout touchInterceptor;
+  private final PublishSubject<Event> domEvents = PublishSubject.create();
+  private ClickEventInterceptingLayout touchInterceptor;
 
   private DomDriver(ViewGroup root) {
     this.root = root;
@@ -31,131 +25,82 @@ public final class DomDriver implements Driver {
     return new DomDriver(target);
   }
 
-  private void renderVTree(Anvil.Renderable renderable) {
-    if (touchInterceptor == null) {
-      touchInterceptor = new TouchEventInterceptingLayout(root.getContext());
-      root.addView(touchInterceptor);
-    }
-    Anvil.mount(touchInterceptor, renderable);
-
-    final ArrayList<View> focusables = touchInterceptor.getFocusables(View.FOCUS_FORWARD);
-    for (View focusable: focusables) {
-      if (focusable instanceof EditText) {
-        final EditText editText = (EditText) focusable;
-        if (editText.getTag() == null || !(editText.getTag() instanceof DomTextWatcher)) {
-          DomTextWatcher domTextWatcher = new DomTextWatcher(editText);
-          editText.addTextChangedListener(domTextWatcher);
-          editText.setTag(domTextWatcher);
-        }
+  @Override public void apply(Observable<?> stream) {
+    //noinspection unchecked
+    ((Observable<Anvil.Renderable>) stream).subscribe(new Observer<Anvil.Renderable>() {
+      @Override public void onCompleted() {
       }
+
+      @Override public void onError(Throwable e) {
+        throw new RuntimeException(e);
+      }
+
+      @Override public void onNext(Anvil.Renderable renderable) {
+        Anvil.mount(root, renderable);
+        maybeInjectClickInterceptingLayout();
+        recursivelySetListeners(touchInterceptor);
+      }
+    });
+  }
+
+  private void maybeInjectClickInterceptingLayout() {
+    if (touchInterceptor == null) {
+      if (root.getParent() == null || !(root.getParent() instanceof ViewGroup)) {
+        throw new IllegalStateException("The root View must have a parent ViewGroup.");
+      }
+      if (root.getParent() instanceof ClickEventInterceptingLayout) {
+        touchInterceptor = (ClickEventInterceptingLayout) root.getParent();
+      } else {
+        touchInterceptor = new ClickEventInterceptingLayout(root.getContext());
+        touchInterceptor.clickEventsObservable().subscribe(domEvents::onNext);
+        Util.wrapViewWith(root, touchInterceptor);
+      }
+    }
+  }
+
+  private void recursivelySetListeners(ViewGroup viewGroup) {
+    int count = viewGroup.getChildCount();
+    for (int i = 0; i < count; i++) {
+      View view = viewGroup.getChildAt(i);
+      if (view instanceof NumberPicker) {
+        subscribe(maybeSetValueChangedListener((NumberPicker) view));
+      } else if (view instanceof EditText) {
+        subscribe(maybeSetTextChangedListener((EditText) view));
+      } else if (view instanceof ViewGroup) {
+        recursivelySetListeners((ViewGroup) view);
+      }
+    }
+  }
+
+  private void subscribe(@Nullable Observable<Event> observable) {
+    if (observable != null) {
+      observable.subscribe(domEvents::onNext);
+    }
+  }
+
+  @Nullable private Observable<Event> maybeSetValueChangedListener(NumberPicker view) {
+    if (view.getTag() == null || !(view.getTag() instanceof NumberPicker.OnValueChangeListener)) {
+      ObservableOnValueChangeListener listener = new ObservableOnValueChangeListener();
+      view.setOnValueChangedListener(listener);
+      view.setTag(listener);
+      return listener.observable();
+    } else {
+      return null;
+    }
+  }
+
+  @Nullable private Observable<Event> maybeSetTextChangedListener(EditText editText) {
+    if (editText.getTag() == null || !(editText.getTag() instanceof ObservableTextWatcher)) {
+      ObservableTextWatcher watcher = ObservableTextWatcher.create(editText);
+      editText.addTextChangedListener(watcher);
+      editText.setTag(watcher);
+      return watcher.observable();
+    } else {
+      return null;
     }
   }
 
   Observable<Event> events() {
-    return events;
-  }
-
-  @Override public void apply(Observable<?> stream) {
-    //noinspection unchecked
-    ((Observable<Anvil.Renderable>) stream).subscribe(this::renderVTree);
-  }
-
-  class DomTextWatcher implements TextWatcher {
-    private final View editText;
-
-    DomTextWatcher(EditText editText) {
-      this.editText = editText;
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-      // noop
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-      events.onNext(new Event("input", editText));
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-      // noop
-    }
-  }
-
-  class TouchEventInterceptingLayout extends FrameLayout {
-    private GestureDetector gestureDetector;
-    private final GestureDetector.SimpleOnGestureListener clickListener =
-        new GestureDetector.SimpleOnGestureListener() {
-          @Override public boolean onSingleTapUp(MotionEvent e) {
-            events.onNext(new Event("click", getClickTarget(TouchEventInterceptingLayout.this, e)));
-            return super.onSingleTapUp(e);
-          }
-        };
-
-    public TouchEventInterceptingLayout(Context context) {
-      super(context);
-      init();
-    }
-
-    public TouchEventInterceptingLayout(Context context, AttributeSet attrs) {
-      super(context, attrs);
-      init();
-    }
-
-    public TouchEventInterceptingLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-      super(context, attrs, defStyleAttr);
-      init();
-    }
-
-    private void init() {
-      gestureDetector = new GestureDetector(getContext(), clickListener);
-    }
-
-    @Override public boolean onInterceptTouchEvent(MotionEvent ev) {
-      gestureDetector.onTouchEvent(ev);
-      return super.onInterceptTouchEvent(ev);
-    }
-  }
-
-  @Nullable private static View getClickTarget(View view, MotionEvent e) {
-    boolean isHit = hitTest(e.getRawX(), e.getRawY(), view);
-    if (isHit && !(view instanceof ViewGroup)) {
-      return view;
-    }
-    if (view instanceof ViewGroup) {
-      ViewGroup viewGroup = (ViewGroup) view;
-      for (int i = 0; i < viewGroup.getChildCount(); i++) {
-        View child = viewGroup.getChildAt(i);
-        View clickTarget = getClickTarget(child, e);
-        if (clickTarget != null) {
-          return clickTarget;
-        }
-      }
-    }
-    return isHit ? view : null;
-  }
-
-  /**
-   * Determines if given points are inside view
-   *
-   * @param x    - x coordinate of point
-   * @param y    - y coordinate of point
-   * @param view - view object to compare
-   * @return true if the points are within view bounds, false otherwise
-   */
-  private static boolean hitTest(float x, float y, View view) {
-    int location[] = new int[2];
-    view.getLocationOnScreen(location);
-    int viewX = location[0];
-    int viewY = location[1];
-
-    //point is inside view bounds
-    if ((x > viewX && x < (viewX + view.getWidth())) &&
-        (y > viewY && y < (viewY + view.getHeight()))) {
-      return true;
-    } else {
-      return false;
-    }
+    return domEvents;
   }
 }

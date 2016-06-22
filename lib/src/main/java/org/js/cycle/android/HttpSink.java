@@ -3,10 +3,10 @@ package org.js.cycle.android;
 import retrofit2.Response;
 import rx.Observable;
 
-public final class HttpSink implements Sink {
-  private final Observable<Observable<Response<?>>> requestStream;
+public final class HttpSink implements Sink<Observable<? extends Response<?>>> {
+  private final Observable<Observable<? extends Response<?>>> requestStream;
 
-  private HttpSink(Observable<Observable<Response<?>>> requestStream) {
+  private HttpSink(Observable<Observable<? extends Response<?>>> requestStream) {
     this.requestStream = requestStream;
   }
 
@@ -14,12 +14,11 @@ public final class HttpSink implements Sink {
     return "HTTP";
   }
 
-  @Override public Observable<?> stream() {
+  @Override public Observable<Observable<? extends Response<?>>> stream() {
     return requestStream;
   }
 
-  public static <T> HttpSink create(Observable<T> requestStream) {
-    //noinspection unchecked
-    return new HttpSink((Observable<Observable<Response<?>>>) requestStream);
+  public static HttpSink create(Observable<Observable<? extends Response<?>>> requestStream) {
+    return new HttpSink(requestStream);
   }
 }

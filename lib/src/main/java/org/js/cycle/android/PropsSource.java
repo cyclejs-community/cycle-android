@@ -3,22 +3,23 @@ package org.js.cycle.android;
 import rx.Observable;
 
 public class PropsSource implements Source {
-  private Observable<? extends Props> propsObservable;
+  public static final String NAME = "PROPS";
+  private Observable<? extends ComponentProperties> propsObservable;
 
-  public PropsSource(Observable<? extends Props> propsObservable) {
+  public PropsSource(Observable<? extends ComponentProperties> propsObservable) {
     this.propsObservable = propsObservable;
   }
 
-  public Observable<? extends Props> observable() {
+  public Observable<? extends ComponentProperties> observable() {
     return propsObservable;
   }
 
   @Override public String name() {
-    return "PROPS";
+    return NAME;
   }
 
   @Override public void apply(Observable<?> stream) {
     //noinspection unchecked
-    propsObservable = (Observable<? extends Props>) stream;
+    propsObservable = (Observable<? extends ComponentProperties>) stream;
   }
 }

@@ -19,4 +19,22 @@ public final class Event {
   public String name() {
     return name;
   }
+
+  @Override public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Event event = (Event) o;
+
+    if (!name.equals(event.name)) return false;
+    if (!view.equals(event.view)) return false;
+
+    return true;
+  }
+
+  @Override public int hashCode() {
+    int result = name.hashCode();
+    result = 31 * result + view.hashCode();
+    return result;
+  }
 }

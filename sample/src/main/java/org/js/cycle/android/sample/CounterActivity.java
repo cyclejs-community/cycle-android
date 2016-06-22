@@ -16,11 +16,11 @@ import static trikita.anvil.DSL.text;
 
 public class CounterActivity extends SampleActivity {
   @Override protected Sinks main(Sources sources) {
-    Observable<Integer> actionStream = Observable.merge(
+    Observable<Integer> action$ = Observable.merge(
         sources.dom().select(R.id.btnIncrement).events("click").map(ev -> 1),
         sources.dom().select(R.id.btnDecrement).events("click").map(ev -> -1));
 
-    DomSink domSink = DomSink.create(actionStream
+    DomSink domSink = DomSink.create(action$
         .startWith(0)
         .scan((x, y) -> x + y)
         .map(String::valueOf)
@@ -36,7 +36,7 @@ public class CounterActivity extends SampleActivity {
     return R.id.nav_counter;
   }
 
-  public static Intent newIntent(Context context) {
+  static Intent newIntent(Context context) {
     return new Intent(context, CounterActivity.class);
   }
 }

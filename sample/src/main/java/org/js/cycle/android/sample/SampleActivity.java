@@ -21,18 +21,13 @@ import org.js.cycle.android.Sources;
 
 public abstract class SampleActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
-  protected DrawerLayout drawerLayout;
-  protected NavigationView navigationView;
-  protected Toolbar toolbar;
-  protected ViewGroup app;
-
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_sample);
-    toolbar = (Toolbar) findViewById(R.id.toolbar);
-    app = (ViewGroup) findViewById(R.id.app);
-    drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-    navigationView = (NavigationView) findViewById(R.id.drawer);
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    ViewGroup app = (ViewGroup) findViewById(R.id.app);
+    DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    NavigationView navigationView = (NavigationView) findViewById(R.id.drawer);
     navigationView.getMenu().findItem(menuItemId()).setChecked(true);
     setSupportActionBar(toolbar);
     ActionBar actionBar = getSupportActionBar();
@@ -70,7 +65,7 @@ public abstract class SampleActivity extends AppCompatActivity
         finish();
         break;
       case R.id.nav_bmi:
-        startActivity(BMIActivity.newIntent(this));
+        startActivity(BmiActivity.newIntent(this));
         finish();
         break;
       default:

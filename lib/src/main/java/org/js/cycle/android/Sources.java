@@ -32,10 +32,10 @@ public class Sources {
         return source;
       }
     }
-    return null;
+    throw new IllegalArgumentException("Source not found with name=" + name);
   }
 
   public PropsSource props() {
-      return (PropsSource) findSourceByName("PROPS");
+    return (PropsSource) findSourceByName("PROPS");
   }
 }
