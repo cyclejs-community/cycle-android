@@ -65,7 +65,7 @@ public abstract class SampleActivity extends AppCompatActivity
         finish();
         break;
       case R.id.nav_bmi:
-        startActivity(Foo.newIntent(this));
+        startActivity(BmiActivity.newIntent(this));
         finish();
         break;
       default:

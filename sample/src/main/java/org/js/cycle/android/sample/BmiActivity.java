@@ -17,7 +17,7 @@ import static trikita.anvil.BaseDSL.text;
 import static trikita.anvil.BaseDSL.withId;
 import static trikita.anvil.BaseDSL.xml;
 
-public class Foo extends SampleActivity {
+public class BmiActivity extends SampleActivity {
   private static final PropsSource HEIGHT_PROPERTIES = new PropsSource(
       Observable.just(new Properties("Height", "cm", 140, 170, 210, R.id.labeled_slider_height)));
   private static final PropsSource WEIGHT_PROPERTIES = new PropsSource(
@@ -57,7 +57,7 @@ public class Foo extends SampleActivity {
   }
 
   static Intent newIntent(Context context) {
-    return new Intent(context, Foo.class);
+    return new Intent(context, BmiActivity.class);
   }
 
   private static class Bmi {

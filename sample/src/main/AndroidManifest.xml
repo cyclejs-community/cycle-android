@@ -29,7 +29,7 @@
       android:label="Github Search"
       android:theme="@style/AppTheme.NoActionBar" />
     <activity
-        android:name=".Foo"
+        android:name=".BmiActivity"
         android:label="BMI"
         android:theme="@style/AppTheme.NoActionBar">
     </activity>
