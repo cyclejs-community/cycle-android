@@ -13,7 +13,7 @@ public class ObservableTextWatcherTest {
     EditText editText = mock(EditText.class);
     ObservableTextWatcher textWatcher = ObservableTextWatcher.create(editText);
     TestSubscriber<Event> subscriber = new TestSubscriber<>();
-    textWatcher.inputEventObservable().subscribe(subscriber);
+    textWatcher.observable().subscribe(subscriber);
     textWatcher.onTextChanged("foo", 0, 0, 0);
     subscriber.assertValue(new Event("input", editText));
     subscriber.assertNotCompleted();

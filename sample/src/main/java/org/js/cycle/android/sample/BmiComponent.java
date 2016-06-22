@@ -1,7 +1,7 @@
 package org.js.cycle.android.sample;
 
 import android.support.annotation.IdRes;
-import android.widget.EditText;
+import android.widget.NumberPicker;
 
 import org.js.cycle.android.Component;
 import org.js.cycle.android.ComponentProperties;
@@ -23,10 +23,8 @@ class BmiComponent implements Component {
     Observable<Output> value$ = sources.dom()
         .select(p.viewId)
         .select(LabeledSlider.NUMBER_PICKER_VIEW_ID)
-        .events("input")
-        .map(ev -> ev.<EditText>view().getText().toString())
-        .map(v -> v.equals("") ? "0" : v)
-        .map(Integer::valueOf)
+        .events("change")
+        .map(ev -> ev.<NumberPicker>view().getValue())
         .startWith(p.initial)
         .map(i -> Math.min(i, p.max))
         .map(i -> Math.max(i, p.min))

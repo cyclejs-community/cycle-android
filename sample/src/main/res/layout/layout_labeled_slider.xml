@@ -5,13 +5,14 @@
     android:id="@+id/labeled_slider_label"
     style="@style/TextAppearance.AppCompat.Medium"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+    android:layout_height="wrap_content"
+    />
 
   <NumberPicker
     android:id="@+id/labeled_slider_picker"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:focusable="true"
-    android:inputType="number"/>
+    android:inputType="number"
+    />
 
 </merge>

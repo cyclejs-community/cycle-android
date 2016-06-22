@@ -11,11 +11,11 @@ import rx.Observable;
 import static org.js.cycle.android.Util.getClickTarget;
 
 @SuppressLint("ViewConstructor")
-class TouchEventInterceptingLayout extends FrameLayout {
+class ClickEventInterceptingLayout extends FrameLayout {
   private final GestureDetector gestureDetector;
   private final Observable<Event> click$;
 
-  TouchEventInterceptingLayout(Context context) {
+  ClickEventInterceptingLayout(Context context) {
     super(context);
     ObservableSingleTapGestureDetector singleTapDetector = new ObservableSingleTapGestureDetector();
     gestureDetector = new GestureDetector(getContext(), singleTapDetector);
