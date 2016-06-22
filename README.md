@@ -1,24 +1,23 @@
 Cycle.js Android
 =========
 
-A Proof of Concept that tries to port the [Cycle.js](http://cycle.js.org) reactive concepts to Android.
+[![Build Status](https://travis-ci.org/felipecsl/cycle-android.svg?branch=master)](https://travis-ci.org/felipecsl/cycle-android)
+
+A Proof of Concept that ports the [Cycle.js](http://cycle.js.org) reactive concepts to Android.
 It currently uses [Anvil](https://github.com/zserge/anvil) for incremental UI updates, [Retrofit](https://github.com/square/retrofit)
 for HTTP requests and, obviously, [RxJava](https://github.com/ReactiveX/RxJava) for the Observables
 implementation.
 
-It's still very early stage and far from usable, but demonstrates how that can be achieved.
-The repository has a sample app with 3 demos: The classic hello world, counter and Github search.
+It's still alpha state, but already demonstrates that it can be achieved.
+The repo has a few demos: The classic Hello World, Counter, Github search and BMI Calculator.
 All have been ported from the Cycle.js [Examples repository](https://github.com/cyclejs/examples).
-
-This is for now just a proposal and I'm hoping to get feedback from people before investing more time
-on it.
 
 # Usage
 
 `build.gradle`
 
 ```groovy
-compile 'com.felipecsl:cycle-android:0.1.0-SNAPSHOT'
+compile 'com.felipecsl:cycle-android:0.2.0'
 ```
 
 `MyActivity.java`
