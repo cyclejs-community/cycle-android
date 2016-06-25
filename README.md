@@ -1,7 +1,7 @@
 Cycle.js Android
 =========
 
-[![Build Status](https://travis-ci.org/felipecsl/cycle-android.svg?branch=master)](https://travis-ci.org/felipecsl/cycle-android)
+[![Build Status](https://travis-ci.org/cyclejs-community/cycle-android.svg?branch=master)](https://travis-ci.org/cyclejs-community/cycle-android)
 
 A Proof of Concept that ports the [Cycle.js](http://cycle.js.org) reactive concepts to Android.
 It currently uses [Anvil](https://github.com/zserge/anvil) for incremental UI updates, [Retrofit](https://github.com/square/retrofit)
@@ -49,7 +49,7 @@ public class MyActivity extends AppCompatActivity {
 }
 ```
 
-See the [Sample app](https://github.com/felipecsl/cycle-android/tree/master/sample/src/main/java/org/js/cycle/android/sample) for more examples.
+See the [Sample app](https://github.com/cyclejs-community/cycle-android/tree/master/sample/src/main/java/org/js/cycle/android/sample) for more examples.
 
 
 License
