@@ -25,6 +25,10 @@ public final class DomSelection {
     return event$.filter(e -> e.name().equals(eventName));
   }
 
+  public Observable<Event> observable() {
+    return event$;
+  }
+
   void emit(Event e) {
     event$.onNext(e);
   }
